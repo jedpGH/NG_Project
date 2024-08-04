@@ -1,0 +1,68 @@
+<!--
+<table>
+    <tr>
+        <td>ID</td>
+        <td><input type="text" [(ngModel)]="product.id" ></td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td><input type="text" [(ngModel)]="product.name" ></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <button type="button" (click)="SaveProduct()" class="btn btn-danger">Save</button>
+        </td>
+    </tr>
+</table>
+-->
+
+<table border="1">
+    <tr>
+        <td></td>
+        <td></td>
+        <td>ID</td>
+        <td>Name</td>
+    </tr>
+    <tr *ngFor="let product of products">
+        <td><button type="button" class="btn btn-primary" (click)="dialogAddEdit.showModal()">Edit</button></td>
+        <td><button type="button" class="btn btn-danger" (click)="dialogDelete.showModal()">Delete</button></td>
+        <td>{{ product.id }}</td>
+        <td>{{ product.name }}</td>
+    </tr>
+    <tr>
+        <td colspan="4"><button type="button" class="btn btn-success" (click)="dialogAddEdit.showModal()">Add</button></td>
+    </tr>
+</table>
+
+<dialog #dialogAddEdit>
+    <table>
+        <tr>
+            <td>ID</td>
+            <td><input type="text"></td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td><input type="text"></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="button" class="btn btn-success" (click)="dialogAddEdit.close()">Save</button>
+                <button type="button" class="btn btn-warning" (click)="dialogAddEdit.close()">Cancel</button>
+            </td>
+        </tr>
+    </table>
+ </dialog>
+
+ <dialog #dialogDelete>
+    <table>
+        <tr>
+            <td>Are you sure you want to delete?</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="button" class="btn btn-success" (click)="dialogDelete.close()">Yes</button>
+                <button type="button" class="btn btn-warning" (click)="dialogDelete.close()">No</button>
+            </td>
+        </tr>
+    </table>
+ </dialog>
