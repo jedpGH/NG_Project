@@ -1,19 +1,23 @@
-<table border="1">
-    <tr>
-        <td></td>
-        <td></td>
-        <td>ID</td>
-        <td>Name</td>
-    </tr>
-    <tr *ngFor="let product of products">
-        <td><button type="button" class="btn btn-primary" (click)="AddEditProduct(product)">Edit</button></td>
-        <td><button type="button" class="btn btn-danger" (click)="ModalDelete(product)">Delete</button></td>
-        <td>{{ product.id }}</td>
-        <td>{{ product.name }}</td>
-    </tr>
-    <tr>
-        <td colspan="4"><button type="button" class="btn btn-success" (click)="AddEditProduct()">Add</button></td>
-    </tr>
+<table style="width: 100%;">
+    <thead class="">
+        <tr>
+            <th style="width: 10%;"></th>
+            <th style="width: 10%;"></th>
+            <th style="width: 30%;">ID</th>
+            <th style="width: 50%;">Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="4"><button type="button" class="btn btn-success" (click)="AddEditProduct()">Add</button></td>
+        </tr>
+        <tr *ngFor="let product of products">
+            <td><button type="button" class="btn btn-primary" (click)="AddEditProduct(product)">Edit</button></td>
+            <td><button type="button" class="btn btn-danger" (click)="ModalDelete(product)">Delete</button></td>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+        </tr>      
+    </tbody>
 </table>
 
 <div class="modal" tabindex="-1" role="dialog" #modalAddEdit>
