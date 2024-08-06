@@ -16,8 +16,8 @@ export class ProductComponent implements OnInit {
 
   @ViewChild("modalAddEdit") modalAddEdit : ElementRef | undefined;
 
-  products: Product[] = [];
   product: Product = new Product();
+  products: Product[] = [];
   newproducts: Product[] = [];
 
   headers = new HttpHeaders({
@@ -38,12 +38,11 @@ export class ProductComponent implements OnInit {
       {
         this.newproducts = JSON.parse(newproducts);
 
-        if (this.newproducts.length > 0)
-          {
-            this.newproducts.forEach(newproduct => {
-              this.products.push(newproduct);
-            });
-          }
+        if (this.newproducts.length > 0) {
+          this.newproducts.forEach(newproduct => {
+            this.products.push(newproduct);
+          });
+        }
       }
     },
     ex => {
@@ -52,7 +51,7 @@ export class ProductComponent implements OnInit {
     });
   }
 
-  AddEditProduct(product?: Product){
+  AddEditProduct(product?: Product) {
     if (this.modalAddEdit != null) {
       if (product == null) {
         this.product = new Product();
@@ -66,14 +65,14 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  SaveProduct() { 
+  SaveProduct(product: Product) { 
     if (this.modalAddEdit != null) {
-      if (this.product.id == "") {
-        this.http.post("https://api.restful-api.dev/objects", { name: this.product.name}, { headers: this.headers }).subscribe((res: any) => {
+      if (product.id == "") {
+        this.http.post<Product>("https://api.restful-api.dev/objects", { name: product.name}, { headers: this.headers }).subscribe(res => {
           if (res != null) {
             console.log(res);
 
-            let newproduct: Product = res;
+            let newproduct = res;
             this.newproducts.push(newproduct);
             sessionStorage.setItem("newproducts", JSON.stringify(this.newproducts));
 
@@ -87,13 +86,14 @@ export class ProductComponent implements OnInit {
         });
       }
       else {
-        this.http.put("https://api.restful-api.dev/objects/" + this.product.id, { name: this.product.name}, { headers: this.headers }).subscribe((res: any) => {
+        this.http.put<Product>("https://api.restful-api.dev/objects/" + product.id, { name: product.name}, { headers: this.headers }).subscribe(res => {
           if (res != null)
           {
             console.log(res);
-            this.product = res;
-            this.newproducts[this.newproducts.indexOf(this.product)] = this.product;
+
+            this.newproducts[this.newproducts.indexOf(product)] = res;
             sessionStorage.setItem("newproducts", JSON.stringify(this.newproducts));
+
             alert("succesfully edited!");
             this.LoadProduct();
           }       
@@ -112,8 +112,10 @@ export class ProductComponent implements OnInit {
     this.http.delete("https://api.restful-api.dev/objects/" + product.id).subscribe(res => {
       if (res != null) {
         console.log(res);
-        this.newproducts.splice(this.newproducts.indexOf(product))
+
+        this.newproducts.splice(this.newproducts.indexOf(product), 1)
         sessionStorage.setItem("newproducts", JSON.stringify(this.newproducts));
+
         alert("successfully deleted!");
         this.LoadProduct();
       } 
