@@ -1,6 +1,6 @@
-# MyProject
+# NG_Project
 
-This is a sample Angular 18 CRUD application.
+This is a sample Angular 18 CRUD application. It uses a free 3rd-Party API for handling data retrieval and manimupation.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.6.
 
