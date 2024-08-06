@@ -15,8 +15,9 @@ export class ProductComponent implements OnInit {
   }
 
   @ViewChild("modalAddEdit") modalAddEdit : ElementRef | undefined;
+  @ViewChild("modalDelete") modalDelete : ElementRef | undefined;
 
-  product: Product = new Product();
+  public product: Product = new Product();
   products: Product[] = [];
   newproducts: Product[] = [];
 
@@ -108,27 +109,45 @@ export class ProductComponent implements OnInit {
     }
   }
 
+  ModalDelete(product: Product)
+  {
+    if (this.modalDelete != null) {
+      this.modalDelete.nativeElement.style.display = "block";
+      this.product = product;
+    }
+  }
+
   DeleteProduct(product: Product) {
-    this.http.delete("https://api.restful-api.dev/objects/" + product.id).subscribe(res => {
-      if (res != null) {
-        console.log(res);
+    if (this.modalDelete != null) {
+      this.http.delete("https://api.restful-api.dev/objects/" + product.id).subscribe(res => {
+        if (res != null) {
+          console.log(res);
 
-        this.newproducts.splice(this.newproducts.indexOf(product), 1)
-        sessionStorage.setItem("newproducts", JSON.stringify(this.newproducts));
+          this.newproducts.splice(this.newproducts.indexOf(product), 1)
+          sessionStorage.setItem("newproducts", JSON.stringify(this.newproducts));
 
-        alert("successfully deleted!");
-        this.LoadProduct();
-      } 
-    },
-    ex => {
-      console.log(ex);
-      alert("Unable to delete!");
-    });
+          alert("successfully deleted!");
+          this.LoadProduct();
+        } 
+      },
+      ex => {
+        console.log(ex);
+        alert("Unable to delete!");
+      });
+
+      this.modalDelete.nativeElement.style.display = "none";
+    }
   }
 
   CloseAddEdit(){
     if (this.modalAddEdit != null) {
       this.modalAddEdit.nativeElement.style.display = "none";
+    }
+  }
+
+  CloseDelete(){
+    if (this.modalDelete != null) {
+      this.modalDelete.nativeElement.style.display = "none";
     }
   }
 }

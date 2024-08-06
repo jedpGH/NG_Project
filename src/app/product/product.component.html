@@ -7,7 +7,7 @@
     </tr>
     <tr *ngFor="let product of products">
         <td><button type="button" class="btn btn-primary" (click)="AddEditProduct(product)">Edit</button></td>
-        <td><button type="button" class="btn btn-danger" (click)="DeleteProduct(product)">Delete</button></td>
+        <td><button type="button" class="btn btn-danger" (click)="ModalDelete(product)">Delete</button></td>
         <td>{{ product.id }}</td>
         <td>{{ product.name }}</td>
     </tr>
@@ -42,16 +42,19 @@
     </div>
 </div>
 
-<dialog #dialogDelete>
-    <table>
-        <tr>
-            <td>Are you sure you want to delete?</td>
-        </tr>
-        <tr>
-            <td>
-                <button type="button" class="btn btn-success" (click)="dialogDelete.close()">Yes</button>
-                <button type="button" class="btn btn-warning" (click)="dialogDelete.close()">No</button>
-            </td>
-        </tr>
-    </table>
- </dialog>
+ <div class="modal" tabindex="-1" role="dialog" #modalDelete>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Product</h5>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete "{{ this.product.name }}" ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="DeleteProduct(this.product)">Delete</button>
+                <button type="button" class="btn btn-secondary" (click)="CloseDelete()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
