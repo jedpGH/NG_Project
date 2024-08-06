@@ -18,6 +18,8 @@ export class ProductComponent implements OnInit {
 
   products: Product[] = [];
   product: Product = new Product();
+  newproducts: Product[] = [];
+
   headers = new HttpHeaders({
     contentType: "application/json"
   });
@@ -26,9 +28,27 @@ export class ProductComponent implements OnInit {
     this.LoadProduct();
   }
 
-  async LoadProduct() {
+  LoadProduct() {
     this.http.get<Product[]>("https://api.restful-api.dev/objects").subscribe(res => {
       this.products = res;
+
+      let newproducts = sessionStorage.getItem("newproducts");
+
+      if (newproducts != null)
+      {
+        this.newproducts = JSON.parse(newproducts);
+
+        if (this.newproducts.length > 0)
+          {
+            this.newproducts.forEach(newproduct => {
+              this.products.push(newproduct);
+            });
+          }
+      }
+    },
+    ex => {
+      console.log(ex);
+      alert("Unable to load!");
     });
   }
 
@@ -46,26 +66,41 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  SaveProduct(){ 
+  SaveProduct() { 
     if (this.modalAddEdit != null) {
-      if (this.product.id == "")
-      {
-        this.http.post("https://api.restful-api.dev/objects", { name: this.product.name}, { headers: this.headers }).subscribe(res => {
-          if (res != null)
-          {
+      if (this.product.id == "") {
+        this.http.post("https://api.restful-api.dev/objects", { name: this.product.name}, { headers: this.headers }).subscribe((res: any) => {
+          if (res != null) {
             console.log(res);
-            alert("Successfully added");
+
+            let newproduct: Product = res;
+            this.newproducts.push(newproduct);
+            sessionStorage.setItem("newproducts", JSON.stringify(this.newproducts));
+
+            alert("succesfully added!");
+            this.LoadProduct();
           }       
+        },
+        ex => {
+          console.log(ex);
+          alert("Unable to add!");
         });
       }
-      else
-      {
-        this.http.put("https://api.restful-api.dev/objects/" + this.product.id, { name: this.product.name}, { headers: this.headers }).subscribe(res => {
+      else {
+        this.http.put("https://api.restful-api.dev/objects/" + this.product.id, { name: this.product.name}, { headers: this.headers }).subscribe((res: any) => {
           if (res != null)
           {
             console.log(res);
-            alert("Successfully updated");
+            this.product = res;
+            this.newproducts[this.newproducts.indexOf(this.product)] = this.product;
+            sessionStorage.setItem("newproducts", JSON.stringify(this.newproducts));
+            alert("succesfully edited!");
+            this.LoadProduct();
           }       
+        },
+        ex => {
+          console.log(ex);
+          alert("Unable to edit!");
         });
       }
 
@@ -73,18 +108,20 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  DeleteProduct(product: Product){
-    if (this.modalAddEdit != null) {
-      this.http.delete("https://api.restful-api.dev/objects/" + "ff808181911c9fd801911d25b58a0073").subscribe(res => {
-        if (res != null)
-        {
-          console.log(res);
-          alert("Successfully deleted");
-        } 
-      });
-
-      this.modalAddEdit.nativeElement.style.display = "none";
-    }
+  DeleteProduct(product: Product) {
+    this.http.delete("https://api.restful-api.dev/objects/" + product.id).subscribe(res => {
+      if (res != null) {
+        console.log(res);
+        this.newproducts.splice(this.newproducts.indexOf(product))
+        sessionStorage.setItem("newproducts", JSON.stringify(this.newproducts));
+        alert("successfully deleted!");
+        this.LoadProduct();
+      } 
+    },
+    ex => {
+      console.log(ex);
+      alert("Unable to delete!");
+    });
   }
 
   CloseAddEdit(){
